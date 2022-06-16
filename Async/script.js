@@ -9,7 +9,7 @@ const baseUrl = `https://restcountries.com/v2/`;
 
 function requestCountry(countryName) {
     const req = new XMLHttpRequest();
-    req.open("GET", baseUrl+ "name/" + countryName);
+    req.open("GET", baseUrl + "name/" + countryName);
     req.send();
     req.addEventListener("load", function () {
 
@@ -55,20 +55,20 @@ const renderCountry = function (data, className = "") {
 }
 
 
-const requestCountryCode = function(code){
+const requestCountryCode = function (code) {
     const req2 = new XMLHttpRequest();
-        req2.open("GET", baseUrl +"alpha/"+ code);
-        req2.send();
-        req2.addEventListener("load", function () { 
-             const data = JSON.parse(req2.responseText)
-             renderCountry(data,"neighbour");
-        })
+    req2.open("GET", baseUrl + "alpha/" + code);
+    req2.send();
+    req2.addEventListener("load", function () {
+        const data = JSON.parse(req2.responseText)
+        renderCountry(data, "neighbour");
+    })
 }
 
 
 const requestCountry2 = function (countryName) {
     const req = new XMLHttpRequest();
-    req.open("GET", baseUrl+ "name/" + countryName);
+    req.open("GET", baseUrl + "name/" + countryName);
     req.send();
     req.addEventListener("load", function () {
 
@@ -82,9 +82,22 @@ const requestCountry2 = function (countryName) {
         data.borders.forEach(element => {
             requestCountryCode(element)
         });
-        
+
     });
 }
 
 
-requestCountry2('ireland')
+//requestCountry2('ireland')
+
+
+
+function fetchCountry(countryName) {
+
+    const req = fetch(baseUrl + "name/" + countryName)
+    .then((response) => response.json())
+    .then((result) => {renderCountry(result[0]); return result[0]?.borders})
+    .then((result)=> {if(result) requestCountryCode(result[0])});
+
+}
+
+fetchCountry('italy')
