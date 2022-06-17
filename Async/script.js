@@ -9,6 +9,11 @@ const countries = ['germany', 'usa', 'italy', 'romania', "france", 'japan']
 //https://restcountries.com/v2/
 const baseUrl = `https://restcountries.com/v2/`;
 
+
+const getJSON = async function (url) {
+    return await (await fetch(url)).json();
+}
+
 function requestCountry(countryName) {
     const req = new XMLHttpRequest();
     req.open("GET", baseUrl + "name/" + countryName);
@@ -131,17 +136,17 @@ function fetchCountry(countryName) {
 //#region Chanlange #1
 
 
-const whereAmI = function(lat,lng){
+const whereAmI = function (lat, lng) {
     const geoUrl = `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`;
     fetch(geoUrl).then((response) => {
-        if(response.ok)
+        if (response.ok)
             return response.json();
-            else throw new Error("Nop")
+        else throw new Error("Nop")
     })
-    .then(data => {
-        fetchCountry(data.address.country)
-    })
-    .catch(err=> console.log(err))
+        .then(data => {
+            fetchCountry(data.address.country)
+        })
+        .catch(err => console.log(err))
 
 }
 // btn.addEventListener('click', () => {
@@ -187,9 +192,9 @@ const whereAmI = function(lat,lng){
 // Promise.resolve('asd').then(x => console.log(x));
 
 
-const whereAmIAsync = async function(countryName){
+const whereAmIAsync = async function (countryName) {
 
-    const [res] = await (await fetch(baseUrl + "name/" + countryName)).json()  ;
+    const [res] = await (await fetch(baseUrl + "name/" + countryName)).json();
     return res;
 }
 
@@ -197,10 +202,62 @@ btn.addEventListener('click', () => {
     renderCountry(whereAmIAsync('Italy'));
 });
 
-(async function(){
-   const res = await whereAmIAsync('Italy');
-   console.log(res)
+(async function () {
+    const res = await whereAmIAsync('Italy');
+    //    console.log(res)
 })();
+
+
+const get3C = async (c1, c2, c3) => {
+    try {
+        let url = baseUrl + "name/";
+        // const [data1] = await getJSON(url+c1);
+        // const [data2] = await getJSON(url+c2);
+        // const [data3] = await getJSON(url+c3);
+
+        // const [[data1],[data2],[data3]] = await Promise.all([getJSON(url+c1),getJSON(url+c2),getJSON(url+c3)]);
+        const data = await Promise.all([getJSON(url + c1), getJSON(url + c2), getJSON(url + c3)])
+        // console.log([data1.capital,data2.capital,data3.capital]);
+        console.log(data.map(item => item[0].capital))
+    }
+    catch (e) {
+        console.error(e);
+    }
+}
+
+// get3C("portugal","canada","tanzania")
+
+const timeout = function (sec) {
+    return new Promise(function (_, reject) {
+        setTimeout(
+            function () {
+                reject(new Error("Timeout"));
+            }, sec * 1000);
+    });
+};
+(async function () {
+    let url = baseUrl + "name/";
+    const data = await Promise.race([getJSON(url + "egypt"), getJSON(url + "canada"), getJSON(url + "italy"), timeout(0)]);
+
+   // console.log(data[0])
+})();
+
+(async function () {
+    let url = baseUrl + "name/";
+    const data = await Promise.allSettled([getJSON(url + "egypt"), getJSON(url + "canada"), getJSON(url + "italy"), timeout(0)]);
+
+    //console.log(data)
+})();
+
+//Promise.any - Return all fullfiled - ignore rejected
+// (async function () {
+//     let url = baseUrl + "name/";
+//     const data = await Promise.any([getJSON(url + "egypt"), getJSON(url + "canada"), getJSON(url + "italy"), timeout(0)]);
+
+//     console.log(data)
+// })();
+
+
 
 
 
