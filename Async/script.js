@@ -51,7 +51,7 @@ const renderCountry = function (data, className = "") {
   </article>`;
 
     countriesContainer.insertAdjacentHTML('beforeend', el)
-
+    countriesContainer.style.opacity = 1
 }
 
 
@@ -128,7 +128,7 @@ function fetchCountry(countryName) {
 //#endregion
 
 
-//#region Chanlange
+//#region Chanlange #1
 
 
 const whereAmI = function(lat,lng){
@@ -144,9 +144,64 @@ const whereAmI = function(lat,lng){
     .catch(err=> console.log(err))
 
 }
-btn.addEventListener('click', () => {
-    whereAmI(-33.933, 18.474);
-});
+// btn.addEventListener('click', () => {
+//     whereAmI(-33.933, 18.474);
+// });
 
 //#endregion
+
+
+// console.log("Start");
+// setTimeout(()=>{console.log("Timer")},0);
+// Promise.resolve('Resolve 1').then(res=>console.log(res));
+// console.log("End")
+
+// Promise.resolve('Resolve 2').then(res=>{
+//     //for(let i=0;i<9999;i++);
+//     console.log(res);
+// });
+
+// const prom = new Promise(function(resolve, reject){
+//     console.warn("Start")
+
+//     setTimeout(function(){
+//         if(Math.random() > 0.5){
+//             resolve("WIN");
+//         }
+//         else
+//         {
+//             reject("Lose");
+//         }
+//     },0)
+//     console.warn("End")
+// });
+
+// prom.then((res)=> console.warn(res)).catch((err)=>console.error(err));
+
+// const wait = function(sec){
+//     return new Promise((resolve) =>setTimeout(resolve,sec * 1000));
+// }
+
+// wait(1).then(()=>{console.log('finish'); return wait(1)}).then(()=>console.log("finish 2"))
+
+// Promise.resolve('asd').then(x => console.log(x));
+
+
+const whereAmIAsync = async function(countryName){
+
+    const [res] = await (await fetch(baseUrl + "name/" + countryName)).json()  ;
+    return res;
+}
+
+btn.addEventListener('click', () => {
+    renderCountry(whereAmIAsync('Italy'));
+});
+
+(async function(){
+   const res = await whereAmIAsync('Italy');
+   console.log(res)
+})();
+
+
+
 
