@@ -2,6 +2,8 @@
 
 const btn = document.querySelector('.btn-country');
 const countriesContainer = document.querySelector('.countries');
+
+//#region  Course
 const countries = ['germany', 'usa', 'italy', 'romania', "france", 'japan']
 ///////////////////////////////////////
 //https://restcountries.com/v2/
@@ -30,7 +32,6 @@ function requestCountry(countryName) {
 
         countriesContainer.insertAdjacentHTML('beforeend', el)
 
-        countriesContainer.style.opacity = 1;
 
 
     });
@@ -51,7 +52,6 @@ const renderCountry = function (data, className = "") {
 
     countriesContainer.insertAdjacentHTML('beforeend', el)
 
-    countriesContainer.style.opacity = 1;
 }
 
 
@@ -89,15 +89,64 @@ const requestCountry2 = function (countryName) {
 
 //requestCountry2('ireland')
 
-
-
-function fetchCountry(countryName) {
-
-    const req = fetch(baseUrl + "name/" + countryName)
-    .then((response) => response.json())
-    .then((result) => {renderCountry(result[0]); return result[0]?.borders})
-    .then((result)=> {if(result) requestCountryCode(result[0])});
+const renderError = (msg) => {
+    countriesContainer.textContent = `${msg}`
 
 }
 
-fetchCountry('italy')
+function fetchCountry(countryName) {
+
+    fetch(baseUrl + "name/" + countryName)
+        .then((response) => {
+            if (response.ok)
+                return response.json();
+            else
+                throw new Error(`Not found`)
+        })
+        .then((result) => {
+            renderCountry(result[0]);
+            return result[0]?.borders
+        })
+        .then((result) => {
+            if (result)
+                requestCountryCode(result[0])
+        })
+        .catch((err) => {
+            renderError(`${err.message}`);
+        })
+        .finally(() => {
+            countriesContainer.style.opacity = 1;
+        });
+
+}
+
+// btn.addEventListener('click', () => {
+//     fetchCountry('italy')
+// });
+
+// fetchCountry('italy')
+//#endregion
+
+
+//#region Chanlange
+
+
+const whereAmI = function(lat,lng){
+    const geoUrl = `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`;
+    fetch(geoUrl).then((response) => {
+        if(response.ok)
+            return response.json();
+            else throw new Error("Nop")
+    })
+    .then(data => {
+        fetchCountry(data.address.country)
+    })
+    .catch(err=> console.log(err))
+
+}
+btn.addEventListener('click', () => {
+    whereAmI(-33.933, 18.474);
+});
+
+//#endregion
+
