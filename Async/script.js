@@ -96,7 +96,6 @@ const requestCountry2 = function (countryName) {
 
 const renderError = (msg) => {
     countriesContainer.textContent = `${msg}`
-
 }
 
 function fetchCountry(countryName) {
@@ -231,7 +230,7 @@ const timeout = function (sec) {
     return new Promise(function (_, reject) {
         setTimeout(
             function () {
-                reject(new Error("Timeout"));
+                reject(new Error("Timeout")); 
             }, sec * 1000);
     });
 };
@@ -250,12 +249,12 @@ const timeout = function (sec) {
 })();
 
 //Promise.any - Return all fullfiled - ignore rejected
-// (async function () {
-//     let url = baseUrl + "name/";
-//     const data = await Promise.any([getJSON(url + "egypt"), getJSON(url + "canada"), getJSON(url + "italy"), timeout(0)]);
+(async function () {
+    let url = baseUrl + "name/";
+    const data = await Promise.any([getJSON(url + "egypt"), getJSON(url + "canada"), getJSON(url + "italy"), timeout(0)]);
 
-//     console.log(data)
-// })();
+    console.log(data)
+})();
 
 //#region Chalange 3
 

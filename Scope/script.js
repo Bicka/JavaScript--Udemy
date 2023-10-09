@@ -15,5 +15,5 @@ function calcAge (bYear){
     return age;
 }
 
-const fName = "Marcel";
+const fName = "Marcel";  
 calcAge(1996)
